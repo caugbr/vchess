@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'Chessfont';
+    src: url('font/chess-webfont.woff2') format('woff2'), url('font/chess-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+.font-piece {
+    font-family: 'Chessfont';
+    font-size: 46px;
+    width: 54px;
+    height: 46px;
+    margin-top: 8px !important;
+}
+
+.font-piece.bp:before {
+    font-size: 38px;
+    content: "p";
+}
+.font-piece.bk:before {
+    content: "k";
+}
+.font-piece.bq:before {
+    content: "r";
+}
+.font-piece.bb:before {
+    content: "b";
+}
+.font-piece.bn:before {
+    content: "n";
+}
+.font-piece.br:before {
+    content: "r";
+}
+.font-piece.wp:before {
+    font-size: 38px;
+    content: "P";
+}
+.font-piece.wk:before {
+    content: "K";
+}
+.font-piece.wq:before {
+    content: "R";
+}
+.font-piece.wb:before {
+    content: "B";
+}
+.font-piece.wn:before {
+    content: "N";
+}
+.font-piece.wr:before {
+    content: "R";
+}

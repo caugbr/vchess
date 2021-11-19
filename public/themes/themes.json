@@ -1,0 +1,12 @@
+{
+    "default": {
+        "pieceType": "png",
+        "cssFile": "",
+        "highlightStyle": {}
+    },
+    "chesscom": {
+        "pieceType": "png",
+        "cssFile": "chesscom.css",
+        "highlightStyle": {}
+    }
+}

@@ -1,0 +1,61 @@
+@use "sass:map";
+
+$small: (
+    "max": 620px
+);
+$mobile: (
+    "max": 942px
+);
+$desktop: (
+    "min": 943px
+);
+
+
+/**
+ * Mixin to generate a @media block
+ * 
+ * @param $size A map var that can have the following indexes (all are optional)
+ *     "media": Media type. 'tv', 'screen' or 'print', for example. Defaults to 'only screen'.
+ *     "min":   Value applied to min-width.
+ *     "max":   Value applied to max-width.
+ *     "extra": Any complement to the query. It will be concatenated at the end of the string before evaluation.
+ *              If is a string, it will be concatenated as it is. 
+ *              If is a map, then each pair index/value will be rendered like this: ' and ([index]: [value])'
+ */
+ @mixin breakpoint($size) {
+    $str: "only screen";
+    @if map.has-key($size, "media") {
+        $str: map-get($size, "media");
+    }
+
+    @if map.has-key($size, "min") and map.has-key($size, "max") {
+        $str: $str + " and (min-width: " + map-get($size, "min") + ") and (max-width: " + map-get($size, "max") + ")";
+    }
+    @else if map.has-key($size, "max") {
+        $str: $str + " and (max-width: " + map-get($size, "max") + ")";
+    }
+    @else if map.has-key($size, "min") {
+        $str: $str + " and (min-width: " + map-get($size, "min") + ")";
+    }
+
+    @if map.has-key($size, "extra") {
+        $extra: map-get($size, "extra");
+        @if type-of($extra) == 'map' {
+            @each $index, $value in $extra {
+                $str: $str + " and (" + $index + ": " + $value + ")";
+            }
+        }
+        @else {
+            $str: $str + " " + $extra;
+        }
+    }
+
+    @media #{$str} {
+        @content;
+    }
+}
+
+
+
+// @include breakpoint($mobile) {
+// }

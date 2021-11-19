@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="DragAndDrop.js"></script>
+    <style>
+        .holder {
+            /* position: relative; */
+            padding: 4em 10%;
+        }
+        table {
+            width: 100%;
+        }
+        td {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #CCC;
+        }
+
+        .dragging {
+            opacity: 0.6;
+        }
+        .can-drop {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div class="holder">
+
+        <table style="position: static;">
+            <tr>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/bp.png" alt=""></td>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/bp.png" alt=""></td>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/bp.png" alt=""></td>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/bp.png" alt=""></td>
+            </tr>
+            <tr>
+                <td class="droppable"></td>
+                <td class="droppable"></td>
+                <td class="droppable"></td>
+                <td class="droppable"></td>
+            </tr>
+            <tr>
+                <td class="droppable"></td>
+                <td class="droppable"></td>
+                <td class="droppable"></td>
+                <td class="droppable"></td>
+            </tr>
+            <tr>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/wp.png" alt=""></td>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/wp.png" alt=""></td>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/wp.png" alt=""></td>
+                <td class="droppable"><img class="draggable" src="../../public/themes/default/img/wp.png" alt=""></td>
+            </tr>
+        </table>
+
+    </div>
+    <script>
+        let dnd = new DragAndDrop({
+            centerOnGet: true,
+            // canDrag(info) {
+            //     console.log('canDrag', info);
+            //     return true;
+            // },
+            // canDrop(info) {
+            //     console.log('canDrop', info);
+            //     return true;
+            // }
+        });
+        dnd.onDrop = info => {
+            console.log('onDrop', info)
+        };
+        dnd.onCancel = info => {
+            console.log('onCancel', info)
+        };
+        // console.log(dnd.info)
+    </script>
+</body>
+</html>

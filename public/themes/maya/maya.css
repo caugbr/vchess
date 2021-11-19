@@ -1,0 +1,53 @@
+@font-face {
+    font-family: 'Maya';
+    src: url('font/mayafont-webfont.woff2') format('woff2'), url('font/mayafont-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+.font-piece {
+    font-family: 'Maya';
+    font-size: 46px;
+
+    width: 54px;
+    height: 50px;
+    margin-top: 4px !important;
+}
+
+.font-piece.wp:before {
+    font-size: 38px;
+    content: "p";
+}
+.font-piece.wk:before {
+    content: "k";
+}
+.font-piece.wq:before {
+    content: "r";
+}
+.font-piece.wb:before {
+    content: "b";
+}
+.font-piece.wn:before {
+    content: "n";
+}
+.font-piece.wr:before {
+    content: "r";
+}
+.font-piece.bp:before {
+    font-size: 38px;
+    content: "o";
+}
+.font-piece.bk:before {
+    content: "l";
+}
+.font-piece.bq:before {
+    content: "w";
+}
+.font-piece.bb:before {
+    content: "v";
+}
+.font-piece.bn:before {
+    content: "m";
+}
+.font-piece.br:before {
+    content: "t";
+}

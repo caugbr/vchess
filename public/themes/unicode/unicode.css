@@ -1,0 +1,43 @@
+
+.font-piece {
+    line-height: 60px;
+}
+
+.font-piece.bp:before {
+    font-size: 42px;
+    content: "\265F";
+}
+.font-piece.bk:before {
+    content: "\265A";
+}
+.font-piece.bq:before {
+    content: "\265B";
+}
+.font-piece.bb:before {
+    content: "\265D";
+}
+.font-piece.bn:before {
+    content: "\265E";
+}
+.font-piece.br:before {
+    content: "\265C";
+}
+.font-piece.wp:before {
+    font-size: 42px;
+    content: "\2659";
+}
+.font-piece.wk:before {
+    content: "\2654";
+}
+.font-piece.wq:before {
+    content: "\2655";
+}
+.font-piece.wb:before {
+    content: "\2657";
+}
+.font-piece.wn:before {
+    content: "\2658";
+}
+.font-piece.wr:before {
+    content: "\2656";
+}

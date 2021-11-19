@@ -1,0 +1,31 @@
+
+/* body {
+    background-color: #312e2b;
+    color: white;
+} */
+
+/* a {
+    color: white;
+} */
+
+#board {
+    border: none;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#chesstable td.meta {
+    color: #4e4741;
+}
+
+#board .white {
+	background-color: #ebecd0;
+}
+
+#board .black {
+	background-color: #779556;
+}
+
+#board td img {
+    max-width: 54px !important;
+}
