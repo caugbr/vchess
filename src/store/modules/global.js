@@ -3,7 +3,8 @@ export default {
         appName: 'VChess',
         appVersion: '0.0.1',
         lang: 'pt-br',
-        menuVisible: true
+        menuVisible: true,
+        waiting: false
     },
     mutations: {
         setLang(state, value) {
@@ -11,6 +12,9 @@ export default {
         },
         toggleMenuVisible(state) {
             state.menuVisible = !state.menuVisible;
+        },
+        isWaiting(state, val) {
+            state.waiting = Boolean(val);
         }
     },
     actions: {
@@ -20,5 +24,6 @@ export default {
         appVersion: state => state.appVersion,
         lang: state => state.lang,
         menuVisible: state => state.menuVisible,
+        waiting: state => state.waiting
     }
 };

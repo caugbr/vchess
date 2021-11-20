@@ -43,28 +43,72 @@
  *     dad.canDrop = info => !info.dropTarget.matches('.busy');
  */
 
-class DragAndDrop {
+ class DragAndDrop {
 
-    defaults = {
-        dragSelector: '.draggable', // to get draggable elements
-        dropSelector: '.droppable', // to get droppable elements
-        draggingClass: 'dragging',  // a className to be applied on draggable during the drag
-        dropHoverClass: 'can-drop', // a className to be applied on droppable while some draggable is over
-        animationTime: 120,         // animations duration on catch (if centerOnGet), drop and cancel
-        centerOnGet: false,         // center element with mouse pointer on catch
-        dragIndex: 9999             // z-index to be applied on draggable during the drag
-    };
-    config = {};
-    info = {};
+	defaults = {
+		dragSelector: '.draggable', // to get draggable elements
+		dropSelector: '.droppable', // to get droppable elements
+		draggingClass: 'dragging',  // a className to be applied on draggable during the drag
+		dropHoverClass: 'can-drop', // a className to be applied on droppable while some draggable is over
+		animationTime: 120,         // animations duration on catch (if centerOnGet), drop and cancel
+		centerOnGet: false,         // center element with mouse pointer on catch
+		dragIndex: 9999             // z-index to be applied on draggable during the drag
+	};
+	config = {};
+	info = {};
 
-    constructor(cfg = {}) {
+	constructor(cfg = {}) {
 		this.config = { ...this.defaults, ...cfg };
-        this.resetInfo();
-		this.destroy();
+		this.resetInfo();
 		this.applyBehaviors();
-    }
+	}
 
-	destroy() {
+	resetInfo() {
+		this.info = {
+			dragging: false,
+			element: null,
+			mouseX: 0,
+			mouseY: 0,
+			elementX: 0,
+			elementY: 0,
+			elementWidth: 0,
+			elementHeight: 0,
+			xDiff: 0,
+			yDiff: 0,
+			elementStartPos: { left: 0, topy: 0 },
+			mouseStartPos: { x: 0, y: 0 },
+			offset: { top: 0, left: 0 },
+			dropTarget: null,
+			from: '',
+			to: ''
+		};
+	}
+
+	applyBehaviors() {
+		if (true === window.dndBehaviorsApplied) {
+			this.removeBehaviors();
+		}
+
+		const dragElements = Array.from(document.querySelectorAll(this.config.dragSelector));
+		if (0 === dragElements.length) {
+			return;
+		}
+		console.log('applyBehaviors')
+
+		document.addEventListener('mousemove', this.mouseMove);
+		document.addEventListener('mouseup', this.mouseUp);
+
+		dragElements.forEach(de => {
+			de.ondragstart = () => false;
+			de.onselectstart = () => false;
+			de.addEventListener('mousedown', this.mouseDown);
+			// console.log('applied', de.className)
+		});
+
+		window.dndBehaviorsApplied = true;
+	}
+
+	removeBehaviors() {
 		try {
 			document.removeEventListener('mousemove', this.mouseMove);
 			document.removeEventListener('mouseup', this.mouseUp);
@@ -73,6 +117,7 @@ class DragAndDrop {
 				e.ondragstart = null;
 				e.onselectstart = null;
 				e.removeEventListener('mousedown', this.mouseDown);
+				// console.log('destroyed', e.className)
 			});
 		} catch (e) {
 			void(0);
@@ -100,7 +145,7 @@ class DragAndDrop {
 
 	offset(el) {
 		const { top, left, width, height } = el.getBoundingClientRect();
-        return { top, left, width, height };
+		return { top, left, width, height };
 	}
 
 	getOffset(el) {
@@ -131,6 +176,14 @@ class DragAndDrop {
 		return coords;
 	}
 
+	getClone() {
+		let placeholder;
+		placeholder = this.info.element.cloneNode();
+		placeholder.classList.add('dnd-placeholder');
+		this.css(placeholder, { opacity: 0, position: 'static' });
+		return placeholder;
+	}
+
 	cancel() {
 		const { top, left } = this.addOffset(this.info.elementStartPos);
 		this.move(left, top);
@@ -144,14 +197,6 @@ class DragAndDrop {
 			this.css(el, {top: y + 'px', left: x + 'px'});
 			setTimeout(() => this.css(el, { transition: 'none' }), time);
 		}, 1);
-	}
-
-	getClone() {
-		let placeholder;
-		placeholder = this.info.element.cloneNode();
-		placeholder.classList.add('dnd-placeholder');
-		this.css(placeholder, { opacity: 0, position: 'static' });
-		return placeholder;
 	}
 
 	finish(drop = true) {
@@ -323,58 +368,21 @@ class DragAndDrop {
 		return coords;
 	}
 
-    applyBehaviors() {
-        const dragElements = Array.from(document.querySelectorAll(this.config.dragSelector));
-		if (0 === dragElements.length) {
-			return;
+	shouldDrag() {
+		if (typeof this.canDrag === 'function') {
+			return this.canDrag(this.info);
 		}
+		return true;
+	}
 
-		document.addEventListener('mousemove', this.mouseMove);
-		document.addEventListener('mouseup', this.mouseUp);
-
-        dragElements.forEach(de => {
-			de.ondragstart = () => false;
-			de.onselectstart = () => false;
-            de.addEventListener('mousedown', this.mouseDown);
-        });
-    }
-
-    shouldDrag() {
-        if (typeof this.canDrag === 'function') {
-            return this.canDrag(this.info);
-        }
-        return true;
-    }
-
-    shouldDrop() {
+	shouldDrop() {
 		if (this.info.dropTarget.isSameNode(this.info.element.parentNode)) {
 			return false;
 		}
-        if (typeof this.info.dropTarget === 'object' && typeof this.canDrop === 'function') {
-            return this.canDrop(this.info);
-        }
-        return (typeof this.info.dropTarget === 'object');
-    }
-
-	resetInfo() {
-		this.info = {
-			dragging: false,
-			element: null,
-			mouseX: 0,
-			mouseY: 0,
-			elementX: 0,
-			elementY: 0,
-            elementWidth: 0,
-            elementHeight: 0,
-            xDiff: 0,
-            yDiff: 0,
-			elementStartPos: { left: 0, topy: 0 },
-			mouseStartPos: { x: 0, y: 0 },
-			offset: { top: 0, left: 0 },
-			dropTarget: null,
-			from: '',
-			to: ''
-		};
+		if (typeof this.info.dropTarget === 'object' && typeof this.canDrop === 'function') {
+			return this.canDrop(this.info);
+		}
+		return (typeof this.info.dropTarget === 'object');
 	}
 
 	getDroppable(x, y) {
@@ -391,7 +399,7 @@ class DragAndDrop {
 			elements[i].style.setProperty('pointer-events', d.value || '', d.priority);
 		});
 		elements = elements.filter(e => e.matches(this.config.dropSelector));
-        return elements.length ? elements[0] : null;
+		return elements.length ? elements[0] : null;
 	}
 
 }

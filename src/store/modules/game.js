@@ -24,7 +24,6 @@ export default {
                 if (out) {
                     state.outOfBoard.push(out);
                 }
-                // this.switchPlayers();
                 state.nextMove = state.nextMove === 'black' ? 'white' : 'black';
             }
         },

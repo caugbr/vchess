@@ -8,6 +8,7 @@
             </div>
         </div>
         <Footer></Footer>
+        <Loading :visible="waiting"></Loading>
     </div>
 </template>
 
@@ -15,13 +16,21 @@
 import Header from "./components/Header.vue";
 import Sidebar from "./components/Sidebar.vue";
 import Footer from "./components/Footer.vue";
+import Loading from "./components/Loading.vue";
+import store from '@/store';
+import { mapGetters } from 'vuex';
 
 export default {
     name: "App",
+    store,
     components: {
         Header,
         Footer,
         Sidebar,
+        Loading
     },
+    computed: {
+        ...mapGetters(['waiting'])
+    }
 };
 </script>

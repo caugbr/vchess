@@ -13,15 +13,12 @@
                         <table cellpadding="0" cellspacing="0" id="board">
                             <tbody>
                                 <tr v-for="row in rows" :key="`tr${row}`">
-                                    <td v-for="col in cols" :key="`td${col}`" :class="`square ${col}${row} ${dnd.droppableClass}`">
+                                    <td v-for="col in cols" :key="`td${col}`" :class="`square ${col}${row}`">
                                         <img 
                                             v-if="cellContent(col + row)" 
                                             :src="cellContent(col + row)" 
                                             alt="" 
-                                            @mousedown="dnd.draggableMouseDown"
-                                            @mousemove="dnd.draggableMouseMove"
-                                            @mouseup="dnd.draggableMouseUp"
-                                            :class="[dnd.draggableClass, cellClass(col + row)]"
+                                            :class="cellClass(col + row)"
                                         >
                                     </td>
                                 </tr>
@@ -43,9 +40,7 @@
 <script>
 import store from '@/store';
 import { mapGetters, mapMutations } from "vuex";
-import DnD from "../DragNDrop.js";
-import Vue from 'vue';
-Vue.use(DnD);
+import DragAndDrop from "../DragAndDrop.js";
 
 export default {
     name: "Board",
@@ -64,7 +59,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['updatePiece', 'switchPlayers']),
+        ...mapMutations(['updatePiece', 'switchPlayers', 'isWaiting']),
         cellContent(coords) {
             const board = this.getBoard();
             if ('' !== board[coords]) {
@@ -83,46 +78,45 @@ export default {
             return cls;
         },
         applyDnD() {
-            this.dnd = this.$dragndrop.start({centerOnGet: true});
-            console.log('DnD', this.dnd)
-            // if (this.dnd === null) {
-            //     this.dnd = new DragAndDrop({
-            //         dragSelector: `img.piece.${this.nextMove}`,
-            //         dropSelector: 'td.square',
-            //         centerOnGet: true
-            //     });
-            // }
-            this.dnd.instance.canDrop = info => {
-                const piece = info.dropTarget.querySelector('img');
-                if (piece) {
-                    if (info.element.classList.contains('white') && piece.classList.contains('white') ||
-                        info.element.classList.contains('black') && piece.classList.contains('black')) {
-                        return false;
+            if (this.dnd === null) {
+                console.log('DnD', this.nextMove)
+                this.dnd = new DragAndDrop({
+                    dragSelector: `img.piece.${this.nextMove}`,
+                    dropSelector: 'td.square',
+                    centerOnGet: true
+                });
+                this.dnd.canDrop = info => {
+                    const piece = info.dropTarget.querySelector('img');
+                    if (piece) {
+                        if (info.element.classList.contains('white') && piece.classList.contains('white') ||
+                            info.element.classList.contains('black') && piece.classList.contains('black')) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            };
-            this.dnd.instance.onDrop = info => {
-                const piece = info.dropTarget.querySelector('img');
-                if (piece) {
-                    info.dropTarget.removeChild(piece);
-                }
-                
-                setTimeout(() => {
-                    this.updatePiece(info);
-                    // this.$emit('changed');
-                    // this.applyDnD();
-                }, 400);
-            };
+                    return true;
+                };
+                this.dnd.onDrop = info => {
+                    this.isWaiting(true);
+                    const piece = info.dropTarget.querySelector('img');
+                    if (piece) {
+                        info.dropTarget.removeChild(piece);
+                    }
+                    
+                    setTimeout(() => {
+                        this.updatePiece(info);
+                        this.$emit('changed');
+                        this.applyDnD();
+                        this.isWaiting(false);
+                    }, 260);
+                };
+            }
         },
         getBoard() {
             return { ...this.board };
         }
     },
-    created() {
-        this.applyDnD();
-    },
     mounted() {
+        console.log('mounted')
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
                 let cls = 'black';
@@ -132,6 +126,7 @@ export default {
                 document.querySelector(`.square.${this.cols[c]}${this.rows[r]}`).classList.add(cls);
             }
         }
+        this.applyDnD();
     }
 };
 </script>

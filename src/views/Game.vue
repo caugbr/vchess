@@ -1,7 +1,7 @@
 <template>
     <div class="game">
         <h1>{{t('Game')}}</h1>
-        <board></board>
+        <board :key="reloadBoard" @changed="reRender"></board>
     </div>
 </template>
 
@@ -13,6 +13,11 @@ import { mapGetters } from 'vuex';
 export default {
     name: 'Game',
     store,
+    data() {
+        return {
+            reloadBoard: 0
+        }
+    },
     components: {
         Board
     },
@@ -22,6 +27,9 @@ export default {
     methods: {
         t(str) {
             return this.i18n.tl(str, this.lang);
+        },
+        reRender() {
+            this.reloadBoard += 1;
         }
     }
 }
